@@ -38,9 +38,9 @@ class _MapBodyState extends State<MapBody> {
         ),
         children: [
           TileLayer(
-            urlTemplate:
-                'https://tile.thunderforest.com/atlas/{z}/{x}/{y}.png?apikey=b037f9afdeb84b2d9b57b93e057619b5',
-            // urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            // urlTemplate:
+            //     'https://tile.thunderforest.com/atlas/{z}/{x}/{y}.png?apikey=b037f9afdeb84b2d9b57b93e057619b5',
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           ),
           Consumer(builder: (context, ref, child) {
             final mapState = ref.watch(mapStateNotifierProvider);

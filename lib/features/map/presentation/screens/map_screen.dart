@@ -14,9 +14,6 @@ class MapScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Map Integration"),
-      ),
       body: Consumer(builder: (context, ref, child) {
         final currentPositionState = ref.watch(currentLocationNotifierProvider);
         //current location listener

@@ -22,7 +22,7 @@ final GoRouter router = GoRouter(
                 path: '/list-screen',
                 pageBuilder: (context, state) {
                   return const NoTransitionPage(
-                    child: MapScreen(),
+                    child: ListMainScreen(),
                   );
                 },
               ),
@@ -33,7 +33,7 @@ final GoRouter router = GoRouter(
                 path: '/map-screen',
                 pageBuilder: (context, state) {
                   return const NoTransitionPage(
-                    child: ListMainScreen(),
+                    child: MapScreen(),
                   );
                 },
               ),
