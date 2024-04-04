@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:map_task/core/extensions/context_extension.dart';
+import 'package:map_task/core/services/url_launcher_services.dart';
 import 'package:map_task/features/list/presentation/providers/list_notifier.dart';
 import 'package:map_task/features/list/presentation/providers/list_state.dart';
+import 'package:map_task/features/list/presentation/widgets/custom_error_widget.dart';
 import 'package:map_task/features/list/presentation/widgets/loading_widget.dart';
 
 class ListMainScreen extends StatelessWidget {
@@ -18,6 +20,9 @@ class ListMainScreen extends StatelessWidget {
         ),
       ),
       body: Consumer(builder: (context, ref, child) {
+        //url launcher listener
+        _urlLauncherListener(ref, context);
+
         //list state listener
         _listStateListener(ref, context);
         final listState = ref.watch(listStateNotifierProvider);
@@ -26,31 +31,64 @@ class ListMainScreen extends StatelessWidget {
         } else if (listState is ListLoaded) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: ListView.builder(
-                itemBuilder: (context, index) {
-                  //individual list item
-                  final listItem = listState.listItemModel[index];
-                  return Card(
-                    child: ListTile(
-                      title: Text(listItem.api),
-                      subtitle: Text(listItem.description),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios,
-                        size: 16,
+            child: RefreshIndicator(
+              onRefresh: () async {
+                _onRefresh(ref);
+              },
+              child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    //individual list item
+                    final listItem = listState.listItemModel[index];
+                    return Card(
+                      child: ListTile(
+                        title: Text(listItem.api),
+                        subtitle: Text(listItem.description),
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                        ),
+                        onTap: () async {
+                          ref
+                              .read(urlLauncherNotifierProvider.notifier)
+                              .tryLaunchUrl(listItem.link);
+                        },
                       ),
-                      onTap: () async {},
-                    ),
-                  );
-                },
-                itemCount: listState.listItemModel.length),
+                    );
+                  },
+                  itemCount: listState.listItemModel.length),
+            ),
           );
         } else if (listState is ListError) {
-          return CustomErrorWidget(text: listState.message);
+          return CustomErrorWidget(
+            text: listState.message,
+            onRefresh: () async {
+              _onRefresh(ref);
+            },
+          );
         }
-        return const CustomErrorWidget(
+        return CustomErrorWidget(
           text: 'We are working on this.',
+          onRefresh: () async {
+            _onRefresh(ref);
+          },
         );
       }),
+    );
+  }
+
+  void _onRefresh(WidgetRef ref) {
+    ref.invalidate(listStateNotifierProvider);
+  }
+
+  void _urlLauncherListener(WidgetRef ref, BuildContext context) {
+    ref.listen(
+      urlLauncherNotifierProvider,
+      (previous, next) {
+        if (next != null) {
+          context.showSnackBar(
+              message: next.message, toastType: ToastType.error);
+        }
+      },
     );
   }
 
@@ -62,21 +100,5 @@ class ListMainScreen extends StatelessWidget {
             toastType: ToastType.success);
       }
     });
-  }
-}
-
-class CustomErrorWidget extends StatelessWidget {
-  final String text;
-
-  const CustomErrorWidget({
-    super.key,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(text),
-    );
   }
 }

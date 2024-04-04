@@ -3,8 +3,10 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:map_task/core/constants/constants.dart';
 import 'package:map_task/core/extensions/context_extension.dart';
 import 'package:map_task/features/map/presentation/providers/notifiers/map_state_notifier.dart';
+import 'package:map_task/features/map/presentation/providers/notifiers/map_tile_url_notifier.dart';
 import 'package:map_task/features/map/presentation/providers/states/map_state.dart';
 
 class MapBody extends StatefulWidget {
@@ -30,44 +32,68 @@ class _MapBodyState extends State<MapBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FlutterMap(
-        mapController: _mapController,
-        options: MapOptions(
-          initialZoom: 4,
-          initialCenter: _defaultPositon,
-        ),
-        children: [
-          TileLayer(
-            // urlTemplate:
-            //     'https://tile.thunderforest.com/atlas/{z}/{x}/{y}.png?apikey=b037f9afdeb84b2d9b57b93e057619b5',
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-          ),
-          Consumer(builder: (context, ref, child) {
-            final mapState = ref.watch(mapStateNotifierProvider);
+      body: Container(
+        color: Constants.primaryColor,
+        child: SafeArea(
+          child: FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              initialZoom: 4,
+              initialCenter: _defaultPositon,
+            ),
+            children: [
+              Consumer(builder: (context, ref, child) {
+                return TileLayer(
+                    // urlTemplate:
+                    //     'https://tile.thunderforest.com/atlas/{z}/{x}/{y}.png?apikey=b037f9afdeb84b2d9b57b93e057619b5',
+                    urlTemplate: ref.watch(mapTileUrlNotifierProvider)
+                    // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    );
+              }),
+              Consumer(builder: (context, ref, child) {
+                final mapState = ref.watch(mapStateNotifierProvider);
 
-            //state notifier listener
-            _mapStateListener(ref, context);
-            if (mapState is MapLoaded) {
-              _addLocationsToMap(mapState, context);
-            }
-            return MarkerLayer(
-              markers: [
-                ...markers,
-                if (widget.currentPosition != null)
-                  Marker(
-                    point: LatLng(widget.currentPosition!.latitude,
-                        widget.currentPosition!.longitude),
-                    width: 100,
-                    height: 100,
-                    child: const Icon(
-                      Icons.home_outlined,
-                      color: Colors.green,
-                    ),
-                  )
-              ],
-            );
-          }),
-        ],
+                //state notifier listener
+                _mapStateListener(ref, context);
+                if (mapState is MapLoaded) {
+                  _addLocationsToMap(mapState, context);
+                }
+                return MarkerLayer(
+                  markers: [
+                    ...markers,
+                    if (widget.currentPosition != null)
+                      Marker(
+                        point: LatLng(widget.currentPosition!.latitude,
+                            widget.currentPosition!.longitude),
+                        width: 100,
+                        height: 100,
+                        child: const Icon(
+                          Icons.home_outlined,
+                          color: Colors.green,
+                        ),
+                      )
+                  ],
+                );
+              }),
+              Consumer(builder: (context, ref, child) {
+                return Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          //changes map
+                          ref
+                              .read(mapTileUrlNotifierProvider.notifier)
+                              .changeMap();
+                        },
+                        child: const Text("Change Map")),
+                  ),
+                );
+              })
+            ],
+          ),
+        ),
       ),
     );
   }
