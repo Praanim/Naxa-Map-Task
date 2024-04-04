@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'features/map/presentation/screens/map_screen.dart'; // Import this for LatLng
+import 'package:map_task/core/routes/app_routes.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -11,8 +11,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MapScreen(),
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      routerConfig: router,
+      title: "Naxa Task",
     );
   }
 }
