@@ -2,7 +2,6 @@ class ListItemModel {
   final String api;
   final String description;
   final String auth;
-  final bool https;
   final String cors;
   final String link;
   final String category;
@@ -11,7 +10,6 @@ class ListItemModel {
     required this.api,
     required this.description,
     required this.auth,
-    required this.https,
     required this.cors,
     required this.link,
     required this.category,
@@ -22,10 +20,20 @@ class ListItemModel {
       api: json['API'],
       description: json['Description'],
       auth: json['Auth'],
-      https: json['HTTPS'],
       cors: json['Cors'],
       link: json['Link'],
       category: json['Category'],
+    );
+  }
+
+  factory ListItemModel.fromDb(Map<String, dynamic> json) {
+    return ListItemModel(
+      api: json['api'],
+      description: json['description'],
+      auth: json['auth'],
+      cors: json['cors'],
+      link: json['link'],
+      category: json['category'],
     );
   }
 
@@ -34,7 +42,6 @@ class ListItemModel {
       'API': api,
       'Description': description,
       'Auth': auth,
-      'HTTPS': https,
       'Cors': cors,
       'Link': link,
       'Category': category,

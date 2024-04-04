@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:map_task/core/extensions/context_extension.dart';
 import 'package:map_task/features/list/presentation/providers/list_notifier.dart';
 import 'package:map_task/features/list/presentation/providers/list_state.dart';
 import 'package:map_task/features/list/presentation/widgets/loading_widget.dart';
@@ -17,6 +18,8 @@ class ListMainScreen extends StatelessWidget {
         ),
       ),
       body: Consumer(builder: (context, ref, child) {
+        //list state listener
+        _listStateListener(ref, context);
         final listState = ref.watch(listStateNotifierProvider);
         if (listState is ListLoading) {
           return const LoadingWidget();
@@ -35,11 +38,7 @@ class ListMainScreen extends StatelessWidget {
                         Icons.arrow_forward_ios,
                         size: 16,
                       ),
-                      onTap: () async {
-                        try {} catch (e) {
-                          print(e.toString());
-                        }
-                      },
+                      onTap: () async {},
                     ),
                   );
                 },
@@ -53,6 +52,16 @@ class ListMainScreen extends StatelessWidget {
         );
       }),
     );
+  }
+
+  void _listStateListener(WidgetRef ref, BuildContext context) {
+    ref.listen(listStateNotifierProvider, (previous, next) {
+      if (next is ListLoaded) {
+        context.showSnackBar(
+            message: "Data Loaded from ${next.datasource.name} server",
+            toastType: ToastType.success);
+      }
+    });
   }
 }
 
