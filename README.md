@@ -13,4 +13,7 @@ Display all the properties of the region on marker click
 
 # Video Demonstration:
 
+# Note
+List View can also be refreshed using pull to refresh action.
+
 https://github.com/Praanim/Naxa-Map-Task/assets/109682352/fc86dca9-7c7e-4b4c-8395-937daf3239d9
