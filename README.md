@@ -1,16 +1,12 @@
-# map_task
+# Naxa Map Task
 
-A new Flutter project.
+# Task details:
+Feature 1:
+Fetch data from https://api.publicapis.org/entries
+Save data to the database
+Display list of data from the database
+Feature 2:
+Fetch data from the https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_geography_regions_points.geojson
+Plot markers on the map (preferred mapbox or maplibre)
+Display all the properties of the region on marker click
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
